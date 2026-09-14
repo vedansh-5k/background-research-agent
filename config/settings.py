@@ -79,6 +79,14 @@ class Settings:
     # schema and reserved output — see _evidence_char_budget(). Raise this if
     # you move to a paid tier or a provider with a bigger window.
     provider_token_budget: int = int(os.getenv("PROVIDER_TOKEN_BUDGET", "8000"))
+    # Gemini's context window is far larger than Groq's free-tier per-request
+    # ceiling, so sizing every run to Groq's 8k budget was throwing away most of
+    # the evidence on Gemini runs (a Satyam check dropped 5 of 8 sources — losing
+    # the SEBI orders that named the directors). Budget per provider instead.
+    gemini_token_budget: int = int(os.getenv("GEMINI_TOKEN_BUDGET", "30000"))
+
+    def token_budget_for_active_provider(self) -> int:
+        return self.gemini_token_budget if self.llm_provider == "gemini" else self.provider_token_budget
 
     def missing_keys(self) -> list[str]:
         missing = []

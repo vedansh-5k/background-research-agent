@@ -28,7 +28,7 @@ def _evidence_char_budget() -> int:
     it here means those edits can't quietly push us over the limit again.
     """
     available = (
-        settings.provider_token_budget
+        settings.token_budget_for_active_provider()
         - settings.max_completion_tokens
         - len(SYSTEM_PROMPT) // CHARS_PER_TOKEN
         - SCHEMA_TOKEN_ALLOWANCE
